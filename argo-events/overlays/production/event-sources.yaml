@@ -12,12 +12,12 @@ spec:
   github:
     argo-combined-app:
       owner: shpendnila
-      repository: nestjs-app
+      repository: test-app
       webhook:
-        endpoint: /nestjs-app
+        endpoint: /test-app
         port: "12000"
         method: POST
-        url: http://webhook.127.0.0.1.nip.io
+        url: http://webhook.104.154.64.251.nip.io
       events:
         - "*"
 #      apiToken:
@@ -48,4 +48,4 @@ spec:
            name: github-eventsource-svc
            port:
              number: 12000
-    host: webhook.127.0.0.1.nip.io
+    host: webhook.104.154.64.251.io
