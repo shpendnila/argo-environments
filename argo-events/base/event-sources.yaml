@@ -11,10 +11,10 @@ spec:
       targetPort: 12000
   github:
     argo-combined-app:
-      owner:
-      repository: argo-combined-app
+      owner: shpendnila
+      repository: test-app
       webhook:
-        endpoint: /argo-combined-app
+        endpoint: /test-app
         port: "12000"
         method: POST
         url: http://acme.com
