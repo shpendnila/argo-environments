@@ -22,10 +22,14 @@ spec:
       command: [/kaniko/executor]
       args:
       - --context={{inputs.parameters.repo_url}}#{{inputs.parameters.repo_ref}}#{{inputs.parameters.repo_commit_id}}
-      - --destination={{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
+      - --destination=gcr.io/rubik-web-app-1540579753013/{{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
       volumeMounts:
-        - name: regcred
-          mountPath: /kaniko/.docker/
+      - name: kaniko-secret
+        mountPath: /secret
+    volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: kaniko-secret
 
 ---
 
