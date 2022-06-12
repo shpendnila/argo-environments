@@ -73,7 +73,7 @@ spec:
                       - name: repo_owner
                         value: shpendnila
                       - name: repo_name
-                        value: test-app
+                        value: argo-environments
                       - name: image_owner
                         value: shpendnila
                       - name: image_name
@@ -94,7 +94,7 @@ spec:
                       - name: repo_owner
                         value: shpendnila
                       - name: repo_name
-                        value: test-app
+                        value: argo-environments
                       - name: image_owner
                         value: shpendnila
                       - name: image_name
