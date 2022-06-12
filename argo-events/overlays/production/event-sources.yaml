@@ -24,9 +24,7 @@ spec:
         port: "12000"
         # HTTP request method to allow. In this case, only POST requests are accepted
         method: POST
-        url: https://webhook.104.154.64.251.nip.io
-      events:
-        - "*"
+        url: http://webhook.104.154.64.251.nip.io
 
       # apiToken refers to K8s secret that stores the github api token
       # if apiToken is provided controller will create webhook on GitHub repo
@@ -47,7 +45,7 @@ spec:
 
       # type of the connection between event-source and Github.
       # You should set it to false to avoid man-in-the-middle and other attacks.
-      insecure: false
+      insecure: true
       # Determines if notifications are sent when the webhook is triggered
       active: true
       # The media type used to serialize the payloads
@@ -61,13 +59,9 @@ metadata:
   name: github
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-cluster-issuer"
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  tls:
-    - hosts:
-        - k8swebhook.rubikhomes.com
-      secretName: k8swebhook-tls
   rules:
   - http:
       paths:
