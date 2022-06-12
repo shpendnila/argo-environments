@@ -10,7 +10,7 @@ spec:
   dependencies:
   - name: github
     eventSourceName: github
-    eventName: test-app
+    eventName: example
   triggers:
   - template:
       name: trigger
