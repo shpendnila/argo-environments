@@ -10,7 +10,7 @@ spec:
   dependencies:
   - name: github
     eventSourceName: github
-    eventName: argo-combined-app
+    eventName: test-app
   triggers:
   - template:
       name: trigger
@@ -29,13 +29,6 @@ spec:
             spec:
               entrypoint: build
               serviceAccountName: workflow
-              volumes:
-              - name: regcred
-                secret:
-                  secretName: regcred
-                  items:
-                    - key: .dockerconfigjson
-                      path: config.json
               - name: github-access
                 secret:
                   secretName: github-access
@@ -64,12 +57,11 @@ spec:
                       - name: repo_commit_id
                         value: ""
                       - name: container_image
-                        value: vfarcic/
+                        value: shpendinila/
                       - name: container_tag
                         value: ""
                   - name: promote-staging
-                    templateRef:
-                      name: promote
+                    templateRef: promote
                       template: promote
                       clusterScope: true
                     arguments:
@@ -77,11 +69,11 @@ spec:
                       - name: environment
                         value: staging
                       - name: repo_owner
-                        value: vfarcic
+                        value: shpendila
                       - name: repo_name
-                        value: argo-combined-demo
+                        value: test-app
                       - name: image_owner
-                        value: vfarcic
+                        value: shpendnila
                       - name: image_name
                         value: ""
                       - name: tag
@@ -98,11 +90,11 @@ spec:
                       - name: environment
                         value: production
                       - name: repo_owner
-                        value: vfarcic
+                        value: shpendnila
                       - name: repo_name
-                        value: argo-combined-demo
+                        value: test-app
                       - name: image_owner
-                        value: vfarcic
+                        value: shpendila
                       - name: image_name
                         value: ""
                       - name: tag
