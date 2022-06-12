@@ -10,7 +10,7 @@ spec:
   dependencies:
   - name: github
     eventSourceName: github
-    eventName: test-app
+    eventName: argo-combined-app
   triggers:
   - template:
       name: trigger
@@ -30,12 +30,6 @@ spec:
               entrypoint: build
               serviceAccountName: workflow
               volumes:
-              - name: kaniko-secret
-                secret:
-                  secretName: kaniko-secret
-                  items:
-                    - key: kaniko-secret
-                      path: /secret
               - name: github-access
                 secret:
                   secretName: github-access
@@ -64,11 +58,12 @@ spec:
                       - name: repo_commit_id
                         value: ""
                       - name: container_image
-                        value: shpendinila/
+                        value: shpendnila/
                       - name: container_tag
                         value: ""
                   - name: promote-staging
-                    templateRef: promote
+                    templateRef:
+                      name: promote
                       template: promote
                       clusterScope: true
                     arguments:
@@ -76,7 +71,7 @@ spec:
                       - name: environment
                         value: staging
                       - name: repo_owner
-                        value: shpendila
+                        value: shpendnila
                       - name: repo_name
                         value: test-app
                       - name: image_owner
@@ -101,7 +96,7 @@ spec:
                       - name: repo_name
                         value: test-app
                       - name: image_owner
-                        value: shpendila
+                        value: shpendnila
                       - name: image_name
                         value: ""
                       - name: tag
@@ -165,4 +160,3 @@ spec:
             dependencyName: github
             dataKey: body.after
           dest: spec.templates.0.dag.tasks.2.arguments.parameters.5.value
-
