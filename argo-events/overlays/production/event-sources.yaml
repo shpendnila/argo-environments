@@ -18,13 +18,14 @@ spec:
       # Github will send events to following port and endpoint
       webhook:
         # endpoint to listen to events on
-        endpoint: /push
+        endpoint: /test-app
         # port to run internal HTTP server on
         port: "12000"
         # HTTP request method to allow. In this case, only POST requests are accepted
         method: POST
         url: http://webhook.104.154.64.251.nip.io
-
+      events:
+        - "*"
       # apiToken refers to K8s secret that stores the github api token
       # if apiToken is provided controller will create webhook on GitHub repo
       # +optional
@@ -33,14 +34,6 @@ spec:
         name: github-access
         # Key within the K8s secret whose corresponding value (must be base64 encoded) is access token
         key: token
-
-#      # webhookSecret refers to K8s secret that stores the github hook secret
-#      # +optional
-#      webhookSecret:
-#        # Name of the K8s secret that contains the hook secret
-#        name: github-access
-#        # Key within the K8s secret whose corresponding value (must be base64 encoded) is hook secret
-#        key: secret
 
       # type of the connection between event-source and Github.
       # You should set it to false to avoid man-in-the-middle and other attacks.
@@ -59,6 +52,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
   - http:
