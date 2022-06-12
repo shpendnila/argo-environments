@@ -58,7 +58,7 @@ spec:
                       - name: repo_commit_id
                         value: ""
                       - name: container_image
-                        value: shpendnila/
+                        value: ""
                       - name: container_tag
                         value: ""
                   - name: promote-staging
