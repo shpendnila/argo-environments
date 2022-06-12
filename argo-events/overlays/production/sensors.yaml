@@ -29,6 +29,13 @@ spec:
             spec:
               entrypoint: build
               serviceAccountName: workflow
+              volumes:
+              - name: kaniko-secret
+                secret:
+                  secretName: kaniko-secret
+                  items:
+                    - key: kaniko-secret
+                      path: /secret
               - name: github-access
                 secret:
                   secretName: github-access
