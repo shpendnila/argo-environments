@@ -24,7 +24,7 @@ spec:
         port: "12000"
         # HTTP request method to allow. In this case, only POST requests are accepted
         method: POST
-        url: http://webhook.104.154.64.251.nip.io
+        url: https://webhook.104.154.64.251.nip.io
       events:
         - "*"
 
