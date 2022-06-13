@@ -15,6 +15,8 @@ spec:
         - owner: shpendnila
           names:
             - test-app
+            - nestjs-app
+            - react-app
       # Github will send events to following port and endpoint
       webhook:
         # endpoint to listen to events on

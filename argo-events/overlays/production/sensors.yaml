@@ -24,7 +24,7 @@ spec:
             apiVersion: argoproj.io/v1alpha1
             kind: Workflow
             metadata:
-              generateName: test-app-
+              generateName: ci-cd-
               namespace: workflows
             spec:
               entrypoint: build
