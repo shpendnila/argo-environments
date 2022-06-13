@@ -13,7 +13,7 @@ spec:
     targetRevision: HEAD
     kustomize:
       images:
-      - gcr.io/rubik-web-app-1540579753013/test-app:c67757fc1f16443438b9420e082faad980f32bb5
+      - gcr.io/rubik-web-app-1540579753013/test-app:6455e0fdd697d2cde4d01dc6771eb07ba822dadc
   destination:
     server: https://kubernetes.default.svc
     namespace: staging
