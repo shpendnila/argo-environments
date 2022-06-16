@@ -4,15 +4,15 @@ metadata:
   name: default
 spec:
   nats:
-    native: {}
-#      containerTemplate:
-#        resources:
-#          requests:
-#            cpu: "10m"
-#      metricsContainerTemplate:
-#        resources:
-#          requests:
-#            cpu: "10m"
+    native:
+      containerTemplate:
+        resources:
+          requests:
+            cpu: "10m"
+      metricsContainerTemplate:
+        resources:
+          requests:
+            cpu: "10m"
 #      antiAffinity: false
 #      persistence:
 #        storageClassName: standard
