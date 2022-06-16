@@ -53,7 +53,7 @@ spec:
       - name: image_name
       - name: tag
     script:
-      image: vfarcic/kustomize:3.9.2
+      image: alpine/git:latest
       command: [sh]
       source: |
         set -e
