@@ -10,7 +10,6 @@ spec:
   source:
     chart: argo-events
     repoURL: https://argoproj.github.io/argo-helm
-    version: 1.13.0
 
   destination:
     namespace: argo-events
