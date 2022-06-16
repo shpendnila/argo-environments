@@ -57,6 +57,9 @@ spec:
       command: [sh]
       source: |
         set -e
+        echo {{inputs.parameters.environment}}
+        echo {{inputs.parameters.image_name}}
+        echo {{inputs.parameters.tag}}
         git clone https://$(cat /.github/token)@github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}
         cd {{inputs.parameters.repo_name}}
         sleep 2
