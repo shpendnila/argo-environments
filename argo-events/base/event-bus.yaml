@@ -6,4 +6,4 @@ spec:
   nats:
     native:
       replicas: 3
-      auth: token
+      auth: none
