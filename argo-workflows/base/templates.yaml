@@ -57,6 +57,7 @@ spec:
       command: [sh]
       source: |
         set -e
+        cat {{inputs.parameters.environment}}/{{inputs.parameters.image_name}}.yaml
         echo {{inputs.parameters.environment}}
         echo {{inputs.parameters.image_name}}
         echo {{inputs.parameters.tag}}
@@ -67,7 +68,6 @@ spec:
         echo AFTER:
         cat {{inputs.parameters.environment}}/{{inputs.parameters.image_name}}.yaml
         echo TEST
-        sleep 2
         cat {{inputs.parameters.environment}}/{{inputs.parameters.image_name}}.yaml | sed -e "s@- gcr.io/rubik-web-app-1540579753013/{{inputs.parameters.image_name}}:.*@- gcr.io/rubik-web-app-1540579753013/{{inputs.parameters.image_name}}:{{inputs.parameters.tag}}@g" | tee {{inputs.parameters.environment}}/{{inputs.parameters.image_name}}.yaml
         git config user.name "$(cat /.github/user)"
         git config user.email "$(cat /.github/email)"
