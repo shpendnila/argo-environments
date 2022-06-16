@@ -53,7 +53,7 @@ spec:
       - name: image_name
       - name: tag
     script:
-      image: alpine/git:latest
+      image: bitnami/git:latest
       command: [sh]
       source: |
         set -e
