@@ -57,6 +57,7 @@ spec:
       command: [sh]
       source: |
         set -e
+        cat {{inputs.parameters.environment}}/{{inputs.parameters.image_name}}.yaml | sed -e "s@- gcr.io/rubik-web-app-1540579753013/{{inputs.parameters.image_name}}:.*@- gcr.io/rubik-web-app-1540579753013/{{inputs.parameters.image_name}}:{{inputs.parameters.tag}}@g"
         cat {{inputs.parameters.environment}}/{{inputs.parameters.image_name}}.yaml
         echo {{inputs.parameters.environment}}
         echo {{inputs.parameters.image_name}}
