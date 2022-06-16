@@ -8,7 +8,7 @@ metadata:
 spec:
   project: production
   source:
-    chart: argo/argo-events
+    chart: argo-events
     repoURL: https://argoproj.github.io/argo-helm
     version: 1.13.0
 
