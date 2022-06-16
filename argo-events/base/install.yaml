@@ -1,16 +1,54 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: eventbus.argoproj.io
+  name: clusterworkflowtemplates.argoproj.io
 spec:
   group: argoproj.io
   names:
-    kind: EventBus
-    listKind: EventBusList
-    plural: eventbus
+    kind: ClusterWorkflowTemplate
+    listKind: ClusterWorkflowTemplateList
+    plural: clusterworkflowtemplates
     shortNames:
-    - eb
-    singular: eventbus
+    - clusterwftmpl
+    - cwft
+    singular: clusterworkflowtemplate
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+        required:
+        - metadata
+        - spec
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: cronworkflows.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: CronWorkflow
+    listKind: CronWorkflowList
+    plural: cronworkflows
+    shortNames:
+    - cwf
+    - cronwf
+    singular: cronworkflow
   scope: Namespaced
   versions:
   - name: v1alpha1
@@ -25,9 +63,688 @@ spec:
             type: object
           spec:
             type: object
+            x-kubernetes-map-type: atomic
             x-kubernetes-preserve-unknown-fields: true
           status:
             type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+        required:
+        - metadata
+        - spec
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: workfloweventbindings.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: WorkflowEventBinding
+    listKind: WorkflowEventBindingList
+    plural: workfloweventbindings
+    shortNames:
+    - wfeb
+    singular: workfloweventbinding
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+        required:
+        - metadata
+        - spec
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: workflows.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: Workflow
+    listKind: WorkflowList
+    plural: workflows
+    shortNames:
+    - wf
+    singular: workflow
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Status of the workflow
+      jsonPath: .status.phase
+      name: Status
+      type: string
+    - description: When the workflow was started
+      format: date-time
+      jsonPath: .status.startedAt
+      name: Age
+      type: date
+    - description: Human readable message indicating details about why the workflow
+        is in this condition.
+      jsonPath: .status.message
+      name: Message
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+        required:
+        - metadata
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: workflowtaskresults.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: WorkflowTaskResult
+    listKind: WorkflowTaskResultList
+    plural: workflowtaskresults
+    singular: workflowtaskresult
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          message:
+            type: string
+          metadata:
+            type: object
+          outputs:
+            properties:
+              artifacts:
+                items:
+                  properties:
+                    archive:
+                      properties:
+                        none:
+                          type: object
+                        tar:
+                          properties:
+                            compressionLevel:
+                              format: int32
+                              type: integer
+                          type: object
+                        zip:
+                          type: object
+                      type: object
+                    archiveLogs:
+                      type: boolean
+                    artifactGC:
+                      properties:
+                        strategy:
+                          enum:
+                          - ""
+                          - OnWorkflowCompletion
+                          - OnWorkflowDeletion
+                          type: string
+                      type: object
+                    artifactory:
+                      properties:
+                        passwordSecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        url:
+                          type: string
+                        usernameSecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                      required:
+                      - url
+                      type: object
+                    deleted:
+                      type: boolean
+                    from:
+                      type: string
+                    fromExpression:
+                      type: string
+                    gcs:
+                      properties:
+                        bucket:
+                          type: string
+                        key:
+                          type: string
+                        serviceAccountKeySecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                      required:
+                      - key
+                      type: object
+                    git:
+                      properties:
+                        branch:
+                          type: string
+                        depth:
+                          format: int64
+                          type: integer
+                        disableSubmodules:
+                          type: boolean
+                        fetch:
+                          items:
+                            type: string
+                          type: array
+                        insecureIgnoreHostKey:
+                          type: boolean
+                        passwordSecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        repo:
+                          type: string
+                        revision:
+                          type: string
+                        singleBranch:
+                          type: boolean
+                        sshPrivateKeySecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        usernameSecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                      required:
+                      - repo
+                      type: object
+                    globalName:
+                      type: string
+                    hdfs:
+                      properties:
+                        addresses:
+                          items:
+                            type: string
+                          type: array
+                        force:
+                          type: boolean
+                        hdfsUser:
+                          type: string
+                        krbCCacheSecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        krbConfigConfigMap:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        krbKeytabSecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        krbRealm:
+                          type: string
+                        krbServicePrincipalName:
+                          type: string
+                        krbUsername:
+                          type: string
+                        path:
+                          type: string
+                      required:
+                      - path
+                      type: object
+                    http:
+                      properties:
+                        auth:
+                          properties:
+                            basicAuth:
+                              properties:
+                                passwordSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                usernameSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                            clientCert:
+                              properties:
+                                clientCertSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                clientKeySecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                            oauth2:
+                              properties:
+                                clientIDSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                clientSecretSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                endpointParams:
+                                  items:
+                                    properties:
+                                      key:
+                                        type: string
+                                      value:
+                                        type: string
+                                    required:
+                                    - key
+                                    type: object
+                                  type: array
+                                scopes:
+                                  items:
+                                    type: string
+                                  type: array
+                                tokenURLSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        headers:
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              value:
+                                type: string
+                            required:
+                            - name
+                            - value
+                            type: object
+                          type: array
+                        url:
+                          type: string
+                      required:
+                      - url
+                      type: object
+                    mode:
+                      format: int32
+                      type: integer
+                    name:
+                      type: string
+                    optional:
+                      type: boolean
+                    oss:
+                      properties:
+                        accessKeySecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        bucket:
+                          type: string
+                        createBucketIfNotPresent:
+                          type: boolean
+                        endpoint:
+                          type: string
+                        key:
+                          type: string
+                        lifecycleRule:
+                          properties:
+                            markDeletionAfterDays:
+                              format: int32
+                              type: integer
+                            markInfrequentAccessAfterDays:
+                              format: int32
+                              type: integer
+                          type: object
+                        secretKeySecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        securityToken:
+                          type: string
+                      required:
+                      - key
+                      type: object
+                    path:
+                      type: string
+                    raw:
+                      properties:
+                        data:
+                          type: string
+                      required:
+                      - data
+                      type: object
+                    recurseMode:
+                      type: boolean
+                    s3:
+                      properties:
+                        accessKeySecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        bucket:
+                          type: string
+                        createBucketIfNotPresent:
+                          properties:
+                            objectLocking:
+                              type: boolean
+                          type: object
+                        encryptionOptions:
+                          properties:
+                            enableEncryption:
+                              type: boolean
+                            kmsEncryptionContext:
+                              type: string
+                            kmsKeyId:
+                              type: string
+                            serverSideCustomerKeySecret:
+                              properties:
+                                key:
+                                  type: string
+                                name:
+                                  type: string
+                                optional:
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                          type: object
+                        endpoint:
+                          type: string
+                        insecure:
+                          type: boolean
+                        key:
+                          type: string
+                        region:
+                          type: string
+                        roleARN:
+                          type: string
+                        secretKeySecret:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        useSDKCreds:
+                          type: boolean
+                      type: object
+                    subPath:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              exitCode:
+                type: string
+              parameters:
+                items:
+                  properties:
+                    default:
+                      type: string
+                    description:
+                      type: string
+                    enum:
+                      items:
+                        type: string
+                      type: array
+                    globalName:
+                      type: string
+                    name:
+                      type: string
+                    value:
+                      type: string
+                    valueFrom:
+                      properties:
+                        configMapKeyRef:
+                          properties:
+                            key:
+                              type: string
+                            name:
+                              type: string
+                            optional:
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                        default:
+                          type: string
+                        event:
+                          type: string
+                        expression:
+                          type: string
+                        jqFilter:
+                          type: string
+                        jsonPath:
+                          type: string
+                        parameter:
+                          type: string
+                        path:
+                          type: string
+                        supplied:
+                          type: object
+                      type: object
+                  required:
+                  - name
+                  type: object
+                type: array
+              result:
+                type: string
+            type: object
+          phase:
+            type: string
+          progress:
+            type: string
+        required:
+        - metadata
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: workflowtasksets.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: WorkflowTaskSet
+    listKind: WorkflowTaskSetList
+    plural: workflowtasksets
+    shortNames:
+    - wfts
+    singular: workflowtaskset
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            type: object
+            x-kubernetes-map-type: atomic
             x-kubernetes-preserve-unknown-fields: true
         required:
         - metadata
@@ -41,16 +758,16 @@ spec:
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: eventsources.argoproj.io
+  name: workflowtemplates.argoproj.io
 spec:
   group: argoproj.io
   names:
-    kind: EventSource
-    listKind: EventSourceList
-    plural: eventsources
+    kind: WorkflowTemplate
+    listKind: WorkflowTemplateList
+    plural: workflowtemplates
     shortNames:
-    - es
-    singular: eventsource
+    - wftmpl
+    singular: workflowtemplate
   scope: Namespaced
   versions:
   - name: v1alpha1
@@ -65,9 +782,7 @@ spec:
             type: object
           spec:
             type: object
-            x-kubernetes-preserve-unknown-fields: true
-          status:
-            type: object
+            x-kubernetes-map-type: atomic
             x-kubernetes-preserve-unknown-fields: true
         required:
         - metadata
@@ -75,74 +790,62 @@ spec:
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
----
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: sensors.argoproj.io
-spec:
-  group: argoproj.io
-  names:
-    kind: Sensor
-    listKind: SensorList
-    plural: sensors
-    shortNames:
-    - sn
-    singular: sensor
-  scope: Namespaced
-  versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        properties:
-          apiVersion:
-            type: string
-          kind:
-            type: string
-          metadata:
-            type: object
-          spec:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-          status:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-        required:
-        - metadata
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: argo-events-sa
-  namespace: argo-events
+  name: argo
+  namespace: argo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-server
+  namespace: argo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-role
+  namespace: argo
+rules:
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
-  name: argo-events-aggregate-to-admin
+  name: argo-aggregate-to-admin
 rules:
 - apiGroups:
   - argoproj.io
   resources:
-  - sensors
-  - sensors/finalizers
-  - sensors/status
-  - eventsources
-  - eventsources/finalizers
-  - eventsources/status
-  - eventbus
-  - eventbus/finalizers
-  - eventbus/status
+  - workflows
+  - workflows/finalizers
+  - workfloweventbindings
+  - workfloweventbindings/finalizers
+  - workflowtemplates
+  - workflowtemplates/finalizers
+  - cronworkflows
+  - cronworkflows/finalizers
+  - clusterworkflowtemplates
+  - clusterworkflowtemplates/finalizers
+  - workflowtasksets
+  - workflowtasksets/finalizers
   verbs:
   - create
   - delete
@@ -158,20 +861,21 @@ kind: ClusterRole
 metadata:
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-  name: argo-events-aggregate-to-edit
+  name: argo-aggregate-to-edit
 rules:
 - apiGroups:
   - argoproj.io
   resources:
-  - sensors
-  - sensors/finalizers
-  - sensors/status
-  - eventsources
-  - eventsources/finalizers
-  - eventsources/status
-  - eventbus
-  - eventbus/finalizers
-  - eventbus/status
+  - workflows
+  - workflows/finalizers
+  - workfloweventbindings
+  - workfloweventbindings/finalizers
+  - workflowtemplates
+  - workflowtemplates/finalizers
+  - cronworkflows
+  - cronworkflows/finalizers
+  - clusterworkflowtemplates
+  - clusterworkflowtemplates/finalizers
   verbs:
   - create
   - delete
@@ -187,20 +891,21 @@ kind: ClusterRole
 metadata:
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-  name: argo-events-aggregate-to-view
+  name: argo-aggregate-to-view
 rules:
 - apiGroups:
   - argoproj.io
   resources:
-  - sensors
-  - sensors/finalizers
-  - sensors/status
-  - eventsources
-  - eventsources/finalizers
-  - eventsources/status
-  - eventbus
-  - eventbus/finalizers
-  - eventbus/status
+  - workflows
+  - workflows/finalizers
+  - workfloweventbindings
+  - workfloweventbindings/finalizers
+  - workflowtemplates
+  - workflowtemplates/finalizers
+  - cronworkflows
+  - cronworkflows/finalizers
+  - clusterworkflowtemplates
+  - clusterworkflowtemplates/finalizers
   verbs:
   - get
   - list
@@ -209,8 +914,92 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: argo-events-role
+  name: argo-cluster-role
 rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  - persistentvolumeclaims/finalizers
+  verbs:
+  - create
+  - update
+  - delete
+  - get
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflows
+  - workflows/finalizers
+  - workflowtasksets
+  - workflowtasksets/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+  - create
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflowtemplates
+  - workflowtemplates/finalizers
+  - clusterworkflowtemplates
+  - clusterworkflowtemplates/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflowtaskresults
+  verbs:
+  - list
+  - watch
+  - deletecollection
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - argoproj.io
+  resources:
+  - cronworkflows
+  - cronworkflows/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
 - apiGroups:
   - ""
   resources:
@@ -219,60 +1008,71 @@ rules:
   - create
   - patch
 - apiGroups:
-  - coordination.k8s.io
+  - policy
   resources:
-  - leases
+  - poddisruptionbudgets
   verbs:
-  - get
-  - list
-  - watch
   - create
-  - update
-  - patch
+  - get
   - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argo-server-cluster-role
+rules:
 - apiGroups:
-  - argoproj.io
+  - ""
   resources:
-  - sensors
-  - sensors/finalizers
-  - sensors/status
-  - eventsources
-  - eventsources/finalizers
-  - eventsources/status
-  - eventbus
-  - eventbus/finalizers
-  - eventbus/status
+  - configmaps
   verbs:
-  - create
-  - delete
-  - deletecollection
   - get
-  - list
-  - patch
-  - update
   - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - create
 - apiGroups:
   - ""
   resources:
   - pods
   - pods/exec
-  - configmaps
-  - secrets
-  - services
-  - persistentvolumeclaims
+  - pods/log
   verbs:
-  - create
   - get
   - list
   - watch
-  - update
-  - patch
   - delete
 - apiGroups:
-  - apps
+  - ""
   resources:
-  - deployments
-  - statefulsets
+  - events
+  verbs:
+  - watch
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - eventsources
+  - sensors
+  - workflows
+  - workfloweventbindings
+  - workflowtemplates
+  - cronworkflows
+  - clusterworkflowtemplates
   verbs:
   - create
   - get
@@ -283,122 +1083,188 @@ rules:
   - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-binding
+  namespace: argo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argo-role
+subjects:
+- kind: ServiceAccount
+  name: argo
+  namespace: argo
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: argo-events-binding
+  name: argo-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: argo-events-role
+  name: argo-cluster-role
 subjects:
 - kind: ServiceAccount
-  name: argo-events-sa
-  namespace: argo-events
+  name: argo
+  namespace: argo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argo-server-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-server-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: argo-server
+  namespace: argo
 ---
 apiVersion: v1
-data:
-  controller-config.yaml: |
-    eventBus:
-      nats:
-        versions:
-        - version: 0.22.1
-          natsStreamingImage: nats-streaming:0.22.1
-          metricsExporterImage: natsio/prometheus-nats-exporter:0.8.0
-      jetstream:
-        # Default JetStream settings, could be overridden by EventBus JetStream specs
-        settings: |
-          # https://docs.nats.io/running-a-nats-service/configuration#jetstream
-          # Only configure "max_memory_store" or "max_file_store", do not set "store_dir" as it has been hardcoded.
-          # e.g. 1G. -1 means no limit, up to 75% of available memory
-          max_memory_store: -1
-          # e.g. 20G. -1 means no limit, Up to 1TB if available
-          max_file_store: 1TB
-        streamConfig: |
-          # The default properties of the streams to be created in this JetStream service
-          maxMsgs: 50000
-          maxAge: 168h
-          maxBytes: -1
-          replicas: 3
-          duplicates: 300s
-        versions:
-        - version: latest
-          natsImage: nats:2.8.1
-          metricsExporterImage: natsio/prometheus-nats-exporter:0.9.1
-          configReloaderImage: natsio/nats-server-config-reloader:0.7.0
-          startCommand: /nats-server
-        - version: 2.8.1
-          natsImage: nats:2.8.1
-          metricsExporterImage: natsio/prometheus-nats-exporter:0.9.1
-          configReloaderImage: natsio/nats-server-config-reloader:0.7.0
-          startCommand: /nats-server
-        - version: 2.8.1-alpine
-          natsImage: nats:2.8.1-alpine
-          metricsExporterImage: natsio/prometheus-nats-exporter:0.9.1
-          configReloaderImage: natsio/nats-server-config-reloader:0.7.0
-          startCommand: nats-server
-        - version: 2.8.2
-          natsImage: nats:2.8.2
-          metricsExporterImage: natsio/prometheus-nats-exporter:0.9.1
-          configReloaderImage: natsio/nats-server-config-reloader:0.7.0
-          startCommand: /nats-server
-        - version: 2.8.2-alpine
-          natsImage: nats:2.8.2-alpine
-          metricsExporterImage: natsio/prometheus-nats-exporter:0.9.1
-          configReloaderImage: natsio/nats-server-config-reloader:0.7.0
-          startCommand: nats-server
 kind: ConfigMap
 metadata:
-  name: argo-events-controller-config
-  namespace: argo-events
+  name: workflow-controller-configmap
+  namespace: argo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argo-server
+  namespace: argo
+spec:
+  ports:
+  - name: web
+    port: 2746
+    targetPort: 2746
+  selector:
+    app: argo-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This service is deprecated. It will be removed in v3.4.
+
+      https://github.com/argoproj/argo-workflows/issues/8441
+  labels:
+    app: workflow-controller
+  name: workflow-controller-metrics
+  namespace: argo
+spec:
+  ports:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app: workflow-controller
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: workflow-controller
+value: 1000000
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: controller-manager
-  namespace: argo-events
+  name: argo-server
+  namespace: argo
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: controller-manager
+      app: argo-server
   template:
     metadata:
       labels:
-        app: controller-manager
+        app: argo-server
     spec:
       containers:
       - args:
-        - controller
-        env:
-        - name: ARGO_EVENTS_IMAGE
-          value: quay.io/argoproj/argo-events:v1.7.1
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        image: quay.io/argoproj/argo-events:v1.7.1
-        imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        name: controller-manager
+        - server
+        env: []
+        image: quay.io/argoproj/argocli:latest
+        name: argo-server
+        ports:
+        - containerPort: 2746
+          name: web
         readinessProbe:
           httpGet:
-            path: /readyz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
+            path: /
+            port: 2746
+            scheme: HTTPS
+          initialDelaySeconds: 10
+          periodSeconds: 20
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         volumeMounts:
-        - mountPath: /etc/argo-events
-          name: controller-config-volume
+        - mountPath: /tmp
+          name: tmp
+      nodeSelector:
+        kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
-        runAsUser: 9731
-      serviceAccountName: argo-events-sa
+      serviceAccountName: argo-server
       volumes:
-      - configMap:
-          name: argo-events-controller-config
-        name: controller-config-volume
+      - emptyDir: {}
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow-controller
+  namespace: argo
+spec:
+  selector:
+    matchLabels:
+      app: workflow-controller
+  template:
+    metadata:
+      labels:
+        app: workflow-controller
+    spec:
+      containers:
+      - args: []
+        command:
+        - workflow-controller
+        env:
+        - name: LEADER_ELECTION_IDENTITY
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        image: quay.io/argoproj/workflow-controller:latest
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 6060
+          initialDelaySeconds: 90
+          periodSeconds: 60
+          timeoutSeconds: 30
+        name: workflow-controller
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 6060
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      priorityClassName: workflow-controller
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: argo
