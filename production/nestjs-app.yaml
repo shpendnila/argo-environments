@@ -13,7 +13,7 @@ spec:
     targetRevision: HEAD
     kustomize:
       images:
-      - gcr.io/rubik-web-app-1540579753013/nestjs-app:90f5c805e12701b003301acb3f4899c26eacc1b9
+      - gcr.io/rubik-web-app-1540579753013/nestjs-app:0af295ffde9181bcc7b9e1c4fe709e4a9307318e
   destination:
     server: https://kubernetes.default.svc
     namespace: production
